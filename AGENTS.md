@@ -1,12 +1,6 @@
 ## Development
 
-When starting the dev server, use background mode:
-
-```
-astro dev --background
-```
-
-Manage the background server with `astro dev stop`, `astro dev status`, and `astro dev logs`.
+Dev server should be already running. You can check its status with `astro dev status`, and view logs with `astro dev logs`. Use integrated browser to preview your site.
 
 ## Documentation
 
