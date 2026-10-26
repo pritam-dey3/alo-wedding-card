@@ -1,17 +1,44 @@
 ---
-import '../styles/global.css';
+import "../styles/global.css";
+import { timelines } from "../data/site";
+import Hero from "../components/Hero.astro";
+import Countdown from "../components/Countdown.astro";
+import Story from "../components/Story.astro";
+import Timeline from "../components/Timeline.astro";
+import OrnamentBand from "../components/OrnamentBand.astro";
+import Invitation from "../components/Invitation.astro";
+import Family from "../components/Family.astro";
+import Memoir from "../components/Memoir.astro";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+<!doctype html>
+<html lang="bn">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@100..900&family=Hind+Siliguri:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <title>Gourav And Rupkatha Wedding Invitation</title>
+        <meta
+            name="description"
+            content="রূপকথা ও গৌরবের শুভ বিবাহ — ২৩ মাঘ ১৪৩২ (ইং ৬ ই ফেব্রুয়ারি ২০২৬)।"
+        />
+    </head>
+    <body>
+        <main>
+            <Hero />
+            <Countdown />
+            <Story />
+            {timelines.map((timeline) => <Timeline timeline={timeline} />)}
+            <OrnamentBand />
+            <Invitation />
+            <Family />
+            <Memoir />
+        </main>
+    </body>
 </html>

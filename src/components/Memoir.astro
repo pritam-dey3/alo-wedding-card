@@ -1,0 +1,50 @@
+---
+/**
+ * s9 — Memoir / স্মারকলিপি. Olive page: wedding + reception dates in
+ * Bengali and English, venue, and the Google Map link (kept).
+ */
+import { links, memoir } from "../data/site";
+---
+
+<section class="section bg-olive text-white" id="memoir">
+    <div class="w-full max-w-3xl text-center">
+        <h2 class="font-body-bn text-[clamp(1.3rem,2.6vw,2.667rem)]">
+            {memoir.title}
+        </h2>
+
+        <dl class="font-body-bn mt-8 space-y-5">
+            {
+                memoir.entries.map(({ label, value }) => (
+                    <div>
+                        <dt class="text-[clamp(1rem,1.7vw,2.043rem)] text-gold">
+                            {label}
+                        </dt>
+                        <dd class="text-[clamp(1.05rem,2vw,2.404rem)]">
+                            {value}
+                        </dd>
+                    </div>
+                ))
+            }
+        </dl>
+
+        <div class="font-body-bn mt-8">
+            <p class="text-[clamp(1rem,1.7vw,2.043rem)] text-gold">
+                {memoir.place.label}
+            </p>
+            {
+                memoir.place.lines.map((line) => (
+                    <p class="text-[clamp(1.05rem,2vw,2.404rem)]">{line}</p>
+                ))
+            }
+        </div>
+
+        <a
+            href={links.map}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="font-body-bn mt-8 inline-block text-[clamp(0.95rem,1.6vw,1.53rem)] text-white underline decoration-gold decoration-2 underline-offset-4 hover:text-gold"
+        >
+            {memoir.mapCaption}
+        </a>
+    </div>
+</section>

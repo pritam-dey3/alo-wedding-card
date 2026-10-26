@@ -1,0 +1,89 @@
+---
+/**
+ * s1 — Countdown. Original: black page with a photo background and a
+ * static image of the numbers. Replica renders a live countdown toward
+ * the wedding day; once the date has passed the numbers collapse to a
+ * single farewell word.
+ */
+import { countdown } from "../data/site";
+
+const days = ["DAYS", "HRS", "MIN", "SEC"];
+---
+
+<section class="section text-white" id="countdown" style="background:#000">
+    {/* Photo background with dark overlay, like the original */}
+    <div
+        class="absolute inset-0 bg-cover bg-center opacity-40"
+        style={`background-image:url('/images/countdown-bg.jpg')`}
+        aria-hidden="true"
+    >
+    </div>
+    <div class="relative flex flex-col items-center text-center">
+        <p class="font-body-bn text-[clamp(1.2rem,2.6vw,2.333rem)] font-medium">
+            {countdown.line1}
+        </p>
+        <p
+            class="font-body-bn text-[clamp(1.7rem,3.6vw,3.333rem)] font-bold text-gold"
+        >
+            {countdown.line2}
+        </p>
+
+        <div
+            id="countdown-clock"
+            data-target={countdown.target}
+            data-past-text={countdown.pastText}
+            class="mt-8 flex items-end gap-4 sm:gap-8"
+        >
+            {
+                days.map((unit) => (
+                    <div class="flex flex-col items-center">
+                        <span
+                            class="font-display text-[clamp(2rem,6vw,4.667rem)] leading-none tabular-nums"
+                            data-unit={unit}
+                        >
+                            --
+                        </span>
+                        <span class="font-eng mt-2 text-xs tracking-[0.3em] text-white/70">
+                            {unit}
+                        </span>
+                    </div>
+                ))
+            }
+        </div>
+    </div>
+</section>
+
+<script>
+    // Live countdown: ticks every second toward the wedding date.
+    const el = document.getElementById("countdown-clock");
+    if (el) {
+        const target = new Date(el.dataset.target ?? "").getTime();
+        const spans = new Map(
+            [...el.querySelectorAll<HTMLElement>("[data-unit]")].map((s) => [
+                s.dataset.unit!,
+                s,
+            ]),
+        );
+        const pad = (n: number) => String(Math.max(n, 0)).padStart(2, "0");
+        if (target <= Date.now()) {
+            // Wedding day already reached: show a single farewell word.
+            el.textContent = el.dataset.pastText ?? "";
+        } else {
+            const tick = () => {
+                let diff = Math.max(0, target - Date.now());
+                const d = Math.floor(diff / 86_400_000);
+                diff -= d * 86_400_000;
+                const h = Math.floor(diff / 3_600_000);
+                diff -= h * 3_600_000;
+                const m = Math.floor(diff / 60_000);
+                const s = Math.floor((diff - m * 60_000) / 1000);
+                spans.get("DAYS")!.textContent = pad(d);
+                spans.get("HRS")!.textContent = pad(h);
+                spans.get("MIN")!.textContent = pad(m);
+                spans.get("SEC")!.textContent = pad(s);
+            };
+            tick();
+            setInterval(tick, 1000);
+        }
+    }
+</script>

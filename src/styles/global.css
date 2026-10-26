@@ -1,1 +1,101 @@
 @import "tailwindcss";
+
+/* Webfonts (Anek Bangla + Hind Siliguri) load via <link> in index.astro head. */
+
+/* ============================================================
+   Design tokens (Tailwind v4 @theme)
+   ============================================================ */
+@theme {
+  /* Palette lifted from the Canva original */
+  --color-cream: #f3f4e7; /* Hero / Timeline 2 / Timeline 3 bg */
+  --color-olive: #2d351b; /* Ornament / Invitation / Family / Memoir bg */
+  --color-gold: #ffde59; /* Accent yellow: headings, highlights */
+
+  /* Font families (see "Font loading" below) */
+  --font-eng: "Roboto", system-ui, sans-serif; /* English UI text */
+  --font-hero: "Bengali OTS", "Anek Bangla", sans-serif; /* রূপকথা ও গৌরবের */
+  --font-display: "Baloo Da Bengali", "Anek Bangla", sans-serif; /* শুভ বিবাহ, years */
+  --font-body-bn: "Anek Bangla", "Hind Siliguri", sans-serif; /* body/subtitle Bengali */
+
+  /* Section canvas: the Canva original is a fixed 1781x768 page.
+     Sections scale their content with clamp() instead. */
+  --spacing-section: clamp(3rem, 8vh, 6rem);
+}
+
+/* ============================================================
+   Font loading
+   The Canva original serves obfuscated subsets of:
+     Bengali OTS, Baloo Da, Anek Bangla, Hind Siliguri,
+     Ekushey Puja (licensed), BreveSlabText-Bold, Codec Pro (licensed)
+   First pass: self-hosted Canva woff2 subsets (public/fonts)
+   where exact glyph coverage matters, Google Fonts as fallback.
+   ============================================================ */
+
+/* Licensed Canva fonts (Ekushey Puja, Codec Pro) fall back to Anek Bangla
+   for now — swap in public/fonts/*.woff2 when licenses are bought. */
+
+@font-face {
+  font-family: "Bengali OTS";
+  src: url("/fonts/bengali-ots-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Baloo Da Bengali";
+  src: url("/fonts/baloo-da-bengali-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("/fonts/roboto-latin-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body-bn);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Section base: full-bleed panel, centered content stack.
+   min-height keeps each panel close to the original 16:9 page ratio. */
+.section {
+  position: relative;
+  width: 100%;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: var(--spacing-section) 1.25rem;
+}
+
+/* Decorative polaroid frame used by the timeline collages */
+.polaroid {
+  position: absolute;
+  background: #fff;
+  padding: 5px 5px 24px;
+  box-shadow:
+    0 2px 6px rgb(0 0 0 / 0.25),
+    0 8px 24px rgb(0 0 0 / 0.18);
+}
+.polaroid > img {
+  display: block;
+  width: 100%;
+  height: auto;
+}

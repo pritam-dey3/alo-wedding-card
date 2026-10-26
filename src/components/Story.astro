@@ -1,0 +1,38 @@
+---
+/**
+ * s2 — Story. Original: white page, headline with a yellow drop word,
+ * one Bengali paragraph, three photos.
+ */
+import { story } from "../data/site";
+---
+
+<section class="section bg-white text-olive" id="story">
+    <div class="w-full max-w-4xl text-center">
+        <h2
+            class="font-body-bn text-[clamp(1.8rem,4.5vw,4.085rem)] font-bold leading-tight"
+        >
+            <span class="text-gold drop-shadow-[0_1px_0_rgba(0,0,0,0.15)]"
+                >ভ</span
+            >ালোবাসার এক দশক
+        </h2>
+
+        <div class="mt-8 grid gap-5 sm:grid-cols-3">
+            {
+                story.images.map((src, i) => (
+                    <img
+                        src={src}
+                        alt={`গল্পের ছবি ${i + 1}`}
+                        class="h-48 w-full rounded object-cover shadow-md sm:h-40"
+                        loading="lazy"
+                    />
+                ))
+            }
+        </div>
+
+        <p
+            class="font-body-bn mt-8 text-[clamp(1rem,1.8vw,1.5rem)] leading-relaxed"
+        >
+            {story.body}
+        </p>
+    </div>
+</section>

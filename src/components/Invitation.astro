@@ -1,0 +1,51 @@
+---
+/**
+ * s7 — Invitation. Olive page: invocation line, salutation, paragraph,
+ * signatures bottom-right. GIF ornament repeated from the band, like the
+ * original.
+ */
+import { invitation, ornament } from "../data/site";
+---
+
+<section class="section bg-olive text-white" id="invitation">
+    <div class="relative w-full max-w-3xl text-center">
+        <img
+            src={ornament.gif}
+            alt=""
+            aria-hidden="true"
+            class="mx-auto mb-6 h-24 w-auto object-contain opacity-90 sm:h-32"
+            loading="lazy"
+        />
+
+        <p class="font-body-bn text-[clamp(1.2rem,2.4vw,2.667rem)]">
+            {invitation.invocation}
+        </p>
+
+        <p
+            class="font-body-bn mt-6 text-[clamp(1.05rem,2vw,2.216rem)] text-gold"
+        >
+            {invitation.salutation}
+        </p>
+
+        <p
+            class="font-body-bn mx-auto mt-4 max-w-2xl text-[clamp(0.95rem,1.9vw,2.216rem)] leading-relaxed"
+        >
+            {invitation.body}
+        </p>
+
+        <div
+            class="font-body-bn mt-8 text-right text-[clamp(0.95rem,1.8vw,1.9rem)] leading-relaxed"
+        >
+            <p>
+                {invitation.signatures.father.label}
+                <br />
+                {invitation.signatures.father.name}
+            </p>
+            <p class="mt-2">
+                {invitation.signatures.mother.label}
+                <br />
+                {invitation.signatures.mother.name}
+            </p>
+        </div>
+    </div>
+</section>
