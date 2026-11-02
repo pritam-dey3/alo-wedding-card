@@ -1,3 +1,5 @@
+import { withBase } from "../utils/withBase";
+
 /**
  * All page copy in one place.
  * Components stay generic — edit text and photos here.
@@ -30,7 +32,7 @@ export const wedding = {
 /* ── 1. Cover ────────────────────────────────────────────── */
 export const cover = {
     invocation: "শ্রী শ্রী প্রজাপতয়ে নমঃ",
-    photo: { src: "/images/hero.jpg", alt: "শ্রেয়া ও সৌরভ" },
+    photo: { src: withBase("/images/hero.jpg"), alt: "শ্রেয়া ও সৌরভ" },
     caption: "আপনারা সাদরে আমন্ত্রিত",
 };
 
@@ -41,9 +43,9 @@ export const countdown = {
     target: wedding.isoDate,
     pastText: "শুভ পরিণয় সম্পন্ন",
     /** Landscape original for wide screens… */
-    bg: "/images/countdown-bg.jpg",
+    bg: withBase("/images/countdown-bg.jpg"),
     /** …and a portrait crop centred on the couple for phones. */
-    bgMobile: "/images/countdown-bg-mobile.jpg",
+    bgMobile: withBase("/images/countdown-bg-mobile.jpg"),
 };
 
 /* ── 3. Invitation ───────────────────────────────────────── */
@@ -95,32 +97,32 @@ export const story = {
     title: "আমাদের গল্প",
     body: "একটা ছোট্ট আলাপ থেকে শুরু। তারপর অজস্র কথা, আর হাত ধরে পথ চলা। হাসি, অভিমান, খুনসুটি আর অনেকগুলো স্বপ্ন নিয়ে আমাদের গল্পটা আজ নতুন এক অধ্যায়ে পা রাখছে। এবার সেই পথেই আমরা চলব একসাথে, আজীবন।",
     photos: [
-        { src: "/images/m02.jpg", date: "২৪ অক্টোবর ২০২৬" },
-        { src: "/images/m18.jpg", date: "২৬ অক্টোবর ২০২৬" },
-        { src: "/images/m21.jpg", date: "২৬ অক্টোবর ২০২৬" },
-        { src: "/images/m01.jpg", date: "২৪ অক্টোবর ২০২৬" },
-        { src: "/images/m26.jpg", date: "২৬ অক্টোবর ২০২৬" },
-        { src: "/images/m03.jpg", date: "২৬ অক্টোবর ২০২৬" },
-        { src: "/images/m10.jpg", date: "২৬ অক্টোবর ২০২৬" },
-        { src: "/images/m12.jpg", date: "২৬ অক্টোবর ২০২৬" },
-        { src: "/images/m15.jpg", date: "২৬ অক্টোবর ২০২৬" },
-        { src: "/images/m07.jpg", date: "২৬ অক্টোবর ২০২৬" },
-        { src: "/images/m20.jpg", date: "২৬ অক্টোবর ২০২৬" },
-        { src: "/images/m05.jpg", date: "২৬ অক্টোবর ২০২৬" },
-        { src: "/images/m25.jpg", date: "২৬ অক্টোবর ২০২৬" },
-        { src: "/images/m24.jpg", date: "২৬ অক্টোবর ২০২৬" },
-        { src: "/images/m23.jpg", date: "২৬ অক্টোবর ২০২৬" },
-        { src: "/images/m06.jpg", date: "২৬ অক্টোবর ২০২৬" },
-        { src: "/images/m13.jpg", date: "২৬ অক্টোবর ২০২৬" },
-        { src: "/images/m09.jpg", date: "২৬ অক্টোবর ২০২৬" },
-        { src: "/images/m22.jpg", date: "২৬ অক্টোবর ২০২৬" },
-        { src: "/images/m27.jpg", date: "২৬ অক্টোবর ২০২৬" },
-        { src: "/images/m14.jpg", date: "২৬ অক্টোবর ২০২৬" },
-        { src: "/images/m16.jpg", date: "২৬ অক্টোবর ২০২৬" },
-        { src: "/images/m11.jpg", date: "২৬ অক্টোবর ২০২৬" },
-        { src: "/images/m04.jpg", date: "২৬ অক্টোবর ২০২৬" },
-        { src: "/images/m08.jpg", date: "২৬ অক্টোবর ২০২৬" },
-        { src: "/images/m19.jpg", date: "২৬ অক্টোবর ২০২৬" },
+        { src: withBase("/images/m02.jpg"), date: "২৪ অক্টোবর ২০২৬" },
+        { src: withBase("/images/m18.jpg"), date: "২৬ অক্টোবর ২০২৬" },
+        { src: withBase("/images/m21.jpg"), date: "২৬ অক্টোবর ২০২৬" },
+        { src: withBase("/images/m01.jpg"), date: "২৪ অক্টোবর ২০২৬" },
+        { src: withBase("/images/m26.jpg"), date: "২৬ অক্টোবর ২০২৬" },
+        { src: withBase("/images/m03.jpg"), date: "২৬ অক্টোবর ২০২৬" },
+        { src: withBase("/images/m10.jpg"), date: "২৬ অক্টোবর ২০২৬" },
+        { src: withBase("/images/m12.jpg"), date: "২৬ অক্টোবর ২০২৬" },
+        { src: withBase("/images/m15.jpg"), date: "২৬ অক্টোবর ২০২৬" },
+        { src: withBase("/images/m07.jpg"), date: "২৬ অক্টোবর ২০২৬" },
+        { src: withBase("/images/m20.jpg"), date: "২৬ অক্টোবর ২০২৬" },
+        { src: withBase("/images/m05.jpg"), date: "২৬ অক্টোবর ২০২৬" },
+        { src: withBase("/images/m25.jpg"), date: "২৬ অক্টোবর ২০২৬" },
+        { src: withBase("/images/m24.jpg"), date: "২৬ অক্টোবর ২০২৬" },
+        { src: withBase("/images/m23.jpg"), date: "২৬ অক্টোবর ২০২৬" },
+        { src: withBase("/images/m06.jpg"), date: "২৬ অক্টোবর ২০২৬" },
+        { src: withBase("/images/m13.jpg"), date: "২৬ অক্টোবর ২০২৬" },
+        { src: withBase("/images/m09.jpg"), date: "২৬ অক্টোবর ২০২৬" },
+        { src: withBase("/images/m22.jpg"), date: "২৬ অক্টোবর ২০২৬" },
+        { src: withBase("/images/m27.jpg"), date: "২৬ অক্টোবর ২০২৬" },
+        { src: withBase("/images/m14.jpg"), date: "২৬ অক্টোবর ২০২৬" },
+        { src: withBase("/images/m16.jpg"), date: "২৬ অক্টোবর ২০২৬" },
+        { src: withBase("/images/m11.jpg"), date: "২৬ অক্টোবর ২০২৬" },
+        { src: withBase("/images/m04.jpg"), date: "২৬ অক্টোবর ২০২৬" },
+        { src: withBase("/images/m08.jpg"), date: "২৬ অক্টোবর ২০২৬" },
+        { src: withBase("/images/m19.jpg"), date: "২৬ অক্টোবর ২০২৬" },
     ],
 };
 
