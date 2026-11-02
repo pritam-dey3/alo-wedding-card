@@ -1,0 +1,65 @@
+---
+/**
+ * A single kolka ornament from `assets/kolka`, drawn through the page's
+ * `<symbol>` sprite (see `kolkaSprite` in data/kolka.ts).
+ *
+ * Size it with a width utility; the height follows the artwork's ratio.
+ * Tint it with a text colour and fade it with `opacity-*` — never with an
+ * alpha colour, which would darken where shapes inside it overlap.
+ *
+ * `rotate` turns the artwork by 90° steps (positive = clockwise, like CSS)
+ * and reshapes the viewBox so the turned piece keeps its proportions.
+ * `flip` mirrors it inside that box, after the turn.
+ */
+import type { KolkaArt } from "../data/kolka";
+
+interface Props {
+    art: KolkaArt;
+    class?: string;
+    /** 0 | 90 | 180 | 270 — clockwise. */
+    rotate?: number;
+    /** Mirror inside the box, applied after `rotate`. */
+    flip?: "x" | "y" | "xy";
+}
+
+const { art, class: className, rotate = 0, flip } = Astro.props;
+
+const { width, height } = art;
+const turn = ((rotate % 360) + 360) % 360;
+const quarterTurn = turn === 90 || turn === 270;
+const boxWidth = quarterTurn ? height : width;
+const boxHeight = quarterTurn ? width : height;
+const viewBox = `0 0 ${boxWidth} ${boxHeight}`;
+
+const turned =
+    turn === 90
+        ? `translate(${height} 0) rotate(90)`
+        : turn === 180
+          ? `translate(${width} ${height}) rotate(180)`
+          : turn === 270
+            ? `translate(0 ${width}) rotate(-90)`
+            : "";
+
+const mirrored = [
+    flip === "x" || flip === "xy" ? `translate(${boxWidth} 0) scale(-1 1)` : "",
+    flip === "y" || flip === "xy" ? `translate(0 ${boxHeight}) scale(1 -1)` : "",
+]
+    .filter(Boolean)
+    .join(" ");
+
+const transform = [mirrored, turned].filter(Boolean).join(" ") || undefined;
+---
+
+<svg
+    class:list={["kolka", className]}
+    viewBox={viewBox}
+    fill="currentColor"
+    aria-hidden="true"
+>
+    <use
+        href={`#kolka-${art.name}`}
+        width={width}
+        height={height}
+        transform={transform}
+    ></use>
+</svg>

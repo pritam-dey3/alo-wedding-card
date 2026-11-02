@@ -1,0 +1,97 @@
+---
+/**
+ * 4 — Footer. A closing note and a native share button.
+ */
+import { footer } from "../data/site";
+import { flourish } from "../data/kolka";
+import BorderRule from "./BorderRule.astro";
+import Kolka from "./Kolka.astro";
+---
+
+<footer class="section panel-dark text-center" id="footer">
+    {/* Rises out of the story's deep cream — the seam is a gradient. */}
+    <div
+        class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-20 bg-gradient-to-b from-cream-2 to-transparent sm:h-28"
+        aria-hidden="true"
+    >
+    </div>
+
+    {/* Corner sprays; wrappers own the flips so GSAP can sway the inner
+        svgs. A wide cloud of curls crowns the rule. */}
+    <div class="absolute bottom-0 left-0 -scale-y-100" aria-hidden="true">
+        <Kolka
+            art={flourish(13)}
+            class="w-[clamp(7rem,14vw,12rem)] text-gold-2 opacity-25"
+        />
+    </div>
+    <div class="absolute bottom-0 right-0 -scale-100" aria-hidden="true">
+        <Kolka
+            art={flourish(13)}
+            class="w-[clamp(7rem,14vw,12rem)] text-gold-2 opacity-25"
+        />
+    </div>
+    <div
+        class="absolute left-1/2 top-4 -translate-x-1/2 sm:top-6"
+        aria-hidden="true"
+    >
+        <Kolka
+            art={flourish(11)}
+            class="w-24 text-gold-2 opacity-25 sm:w-40"
+        />
+    </div>
+    <div class="relative flex w-full max-w-xl flex-col items-center">
+        <BorderRule class="reveal w-40 text-gold-2 opacity-55 sm:w-52" />
+
+        <p
+            class="reveal mt-6 max-w-sm font-body-bn text-sm leading-relaxed text-gold-3/60"
+        >
+            {footer.note}
+        </p>
+
+        <button
+            id="share-card"
+            type="button"
+            class="reveal mt-8 inline-flex items-center gap-2 border border-gold-2/40 px-6 py-2.5 font-body-bn text-sm text-gold-3 transition-colors hover:bg-gold-2/10"
+        >
+            <svg
+                viewBox="0 0 24 24"
+                class="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+            >
+                <path d="M12 16V4M12 4l-4 4M12 4l4 4"></path>
+                <path d="M5 13v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"></path>
+            </svg>
+            {footer.share}
+        </button>
+    </div>
+</footer>
+
+<script>
+    const shareBtn = document.getElementById("share-card");
+
+    shareBtn?.addEventListener("click", async () => {
+        const payload = {
+            title: document.title,
+            text: document.title,
+            url: location.href,
+        };
+        if (navigator.share) {
+            try {
+                await navigator.share(payload);
+                return;
+            } catch (err) {
+                if ((err as DOMException)?.name === "AbortError") return;
+            }
+        }
+        window.open(
+            `https://wa.me/?text=${encodeURIComponent(`${payload.text} ${payload.url}`)}`,
+            "_blank",
+            "noopener",
+        );
+    });
+</script>

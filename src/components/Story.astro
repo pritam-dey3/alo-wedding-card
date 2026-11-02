@@ -1,38 +1,371 @@
 ---
 /**
- * s2 — Story. Original: white page, headline with a yellow drop word,
- * one Bengali paragraph, three photos.
+ * আমাদের গল্প — the couple's photos as one full-bleed, infinitely
+ * looping card carousel (GSAP). It drifts on its own and can be
+ * dragged, flung, wheel-scrolled or arrow-keyed. The old
+ * story/chapter/album sections were merged into this single strip.
  */
 import { story } from "../data/site";
+import { divider } from "../data/ornaments";
+import { flourish } from "../data/kolka";
+import Kolka from "./Kolka.astro";
+
+/** Slight per-card tilt and vertical lift, cycled by position in the set. */
+const tilts = [-2.4, 1.6, -1.2, 2.2, -1.8, 1.4, -2.6, 2];
+const lifts = [10, -12, 6, -9, 12, -7, 8, -11];
+
+const set = story.photos;
+const cards = [...set, ...set]; // the second copy makes the loop seamless
+const n = set.length;
 ---
 
-<section class="section bg-white text-olive" id="story">
-    <div class="w-full max-w-4xl text-center">
-        <h2
-            class="font-body-bn text-[clamp(1.8rem,4.5vw,4.085rem)] font-bold leading-tight"
-        >
-            <span class="text-gold drop-shadow-[0_1px_0_rgba(0,0,0,0.15)]"
-                >ভ</span
-            >ালোবাসার এক দশক
-        </h2>
+<section class="section panel-cream" id="story">
+    {/* Continues the invitation's deep cream — the seam is a gradient. */}
+    <div
+        class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-20 bg-gradient-to-b from-cream-2 to-transparent sm:h-28"
+        aria-hidden="true"
+    >
+    </div>
 
-        <div class="mt-8 grid gap-5 sm:grid-cols-3">
+    {/* A mirrored pair of sprays frames the header; the wrapper owns the
+        flip so GSAP can sway the inner svg freely. */}
+    <div class="absolute -right-6 top-8 -z-10 -scale-x-100 md:right-6" aria-hidden="true">
+        <Kolka
+            art={flourish(2)}
+            class="w-32 text-gold opacity-30 sm:w-44 md:w-56"
+        />
+    </div>
+    <div class="absolute -left-6 top-8 -z-10 md:left-6" aria-hidden="true">
+        <Kolka
+            art={flourish(2)}
+            class="w-32 text-gold opacity-30 sm:w-44 md:w-56"
+        />
+    </div>
+    <div class="absolute -left-3 bottom-6 -z-10" aria-hidden="true">
+        <Kolka
+            art={flourish(7)}
+            class="w-16 text-gold opacity-20 sm:w-32"
+        />
+    </div>
+
+    <div class="w-full max-w-3xl text-center">
+        <p class="reveal font-latin text-xs uppercase tracking-[0.4em] text-gold">
+            {story.eyebrow}
+        </p>
+        <h2
+            class="reveal mt-3 font-display text-[clamp(1.7rem,5.2vw,2.6rem)] leading-tight text-maroon"
+        >
+            {story.title}
+        </h2>
+        <span
+            class="orn reveal mx-auto mt-4 w-40 text-gold/50 sm:w-52"
+            set:html={divider}
+        />
+    </div>
+
+    <p
+        class="reveal mx-auto mt-6 max-w-xl text-center font-body-bn text-[clamp(0.95rem,2.6vw,1.05rem)] leading-[1.95] text-ink/85"
+    >
+        {story.body}
+    </p>
+
+    <div
+        class="story-viewport reveal -mx-5 mt-8 self-stretch sm:mt-10"
+        data-story-viewport
+        tabindex="0"
+        role="region"
+        aria-roledescription="carousel"
+        aria-label={story.title}
+    >
+        <div class="story-track flex w-max items-center" data-story-track>
             {
-                story.images.map((src, i) => (
-                    <img
-                        src={src}
-                        alt={`গল্পের ছবি ${i + 1}`}
-                        class="h-48 w-full rounded object-cover shadow-md sm:h-40"
-                        loading="lazy"
-                    />
-                ))
+                cards.map((photo, i) => {
+                    const k = i % n;
+                    const tilt = tilts[k % tilts.length];
+                    const lift = lifts[k % lifts.length];
+                    return (
+                        <figure
+                            class="story-card shrink-0"
+                            data-story-card
+                            data-tilt={tilt}
+                            data-lift={lift}
+                            style={`--tilt:${tilt}deg;--lift:${lift}px;`}
+                            aria-hidden={i >= n ? "true" : undefined}
+                        >
+                            <img
+                                src={photo.src}
+                                alt={`শ্রেয়া ও সৌরভ — ${photo.date}`}
+                                loading="lazy"
+                                decoding="async"
+                                draggable="false"
+                            />
+                            <figcaption>{photo.date}</figcaption>
+                        </figure>
+                    );
+                })
             }
         </div>
-
-        <p
-            class="font-body-bn mt-8 text-[clamp(1rem,1.8vw,1.5rem)] leading-relaxed"
-        >
-            {story.body}
-        </p>
     </div>
 </section>
+
+<script>
+    import { gsap } from "gsap";
+
+    const root = document.getElementById("story");
+    const viewport = root?.querySelector<HTMLElement>("[data-story-viewport]");
+    const track = root?.querySelector<HTMLElement>("[data-story-track]");
+
+    if (root && viewport && track) {
+        const cards = Array.from(
+            track.querySelectorAll<HTMLElement>("[data-story-card]"),
+        );
+        const n = cards.length / 2; // one seamless set
+
+        if (n >= 2) {
+            const reduced = window.matchMedia(
+                "(prefers-reduced-motion: reduce)",
+            ).matches;
+            const canHover = window.matchMedia(
+                "(hover: hover) and (pointer: fine)",
+            ).matches;
+
+            // Base pose per card; both copies share their original's pose.
+            const tilt = cards.map((c) => Number(c.dataset.tilt ?? 0));
+            const lift = cards.map((c) => Number(c.dataset.lift ?? 0));
+
+            let pitch = 0;
+            let cardW = 0;
+            let wrapX: (v: number) => number = (v) => v;
+
+            const measure = () => {
+                pitch = cards[1].offsetLeft - cards[0].offsetLeft;
+                cardW = cards[0].offsetWidth;
+                wrapX = gsap.utils.wrap(-n * pitch, 0);
+            };
+
+            const state = { x: 0 };
+            let inView = false;
+            let hovering = false;
+            let dragging = false;
+            let gliding = false;
+
+            // GSAP owns every card transform from here on. The stylesheet's
+            // --tilt/--lift pose is the no-JS fallback and matches pose(t=1),
+            // so cards never pop when JS takes over or when they leave the
+            // update window.
+            cards.forEach((c, i) =>
+                gsap.set(c, { y: lift[i], rotation: tilt[i] }),
+            );
+            const rotOf = cards.map((c) =>
+                gsap.quickSetter(c, "rotation", "deg"),
+            );
+            const scaleOf = cards.map((c) => gsap.quickSetter(c, "scale"));
+            const setTrackX = gsap.quickSetter(track, "x", "px");
+
+            const render = () => {
+                const mid = viewport.clientWidth / 2;
+                state.x = wrapX(state.x);
+                setTrackX(state.x);
+
+                const reach = mid + pitch * 2 + cardW; // skip fully off-screen cards
+                const half = pitch * 0.85; // centre-emphasis falloff
+
+                for (let i = 0; i < cards.length; i++) {
+                    const d = Math.abs(state.x + i * pitch + cardW / 2 - mid);
+                    if (d > reach) continue;
+                    const t = Math.min(1, d / half); // 0 centred → 1 away
+                    rotOf[i](tilt[i] * t);
+                    scaleOf[i](1 + 0.07 * (1 - t));
+                }
+            };
+
+            const stopGlide = () => {
+                gliding = false;
+                gsap.killTweensOf(state);
+            };
+
+            const glideTo = (x: number, duration: number, ease: string) => {
+                gliding = true;
+                gsap.to(state, {
+                    x,
+                    duration,
+                    ease,
+                    onUpdate: render,
+                    onComplete: () => (gliding = false),
+                });
+            };
+
+            // ── auto drift: one card every ~2.6s ─────────────────
+            if (!reduced) {
+                gsap.ticker.add((_time, deltaMS) => {
+                    if (!inView || hovering || dragging || gliding) return;
+                    state.x -= (pitch / 2.6) * (Math.min(deltaMS, 50) / 1000);
+                    render();
+                });
+            }
+
+            new IntersectionObserver(
+                ([entry]) => (inView = !!entry?.isIntersecting),
+                { rootMargin: "20% 0px" },
+            ).observe(root);
+
+            if (canHover) {
+                viewport.addEventListener("mouseenter", () => (hovering = true));
+                viewport.addEventListener("mouseleave", () => (hovering = false));
+            }
+
+            // ── drag + fling ─────────────────────────────────────
+            let grabX = 0;
+            let grabState = 0;
+            let lastX = 0;
+            let lastT = 0;
+            let velocity = 0;
+
+            viewport.addEventListener("pointerdown", (e) => {
+                if (e.pointerType === "mouse" && e.button !== 0) return;
+                stopGlide();
+                dragging = true;
+                grabX = e.clientX;
+                grabState = state.x;
+                lastX = e.clientX;
+                lastT = performance.now();
+                velocity = 0;
+                viewport.setPointerCapture(e.pointerId);
+            });
+
+            viewport.addEventListener("pointermove", (e) => {
+                if (!dragging) return;
+                state.x = grabState + (e.clientX - grabX);
+                const now = performance.now();
+                const dt = now - lastT;
+                if (dt > 0) {
+                    velocity = 0.8 * velocity + 0.2 * ((e.clientX - lastX) / dt);
+                    lastX = e.clientX;
+                    lastT = now;
+                }
+                render();
+            });
+
+            viewport.addEventListener("pointerup", () => {
+                if (!dragging) return;
+                dragging = false;
+                const v = gsap.utils.clamp(-2.5, 2.5, velocity); // px/ms
+                if (Math.abs(v) > 0.2 && !reduced) {
+                    const reach = pitch * 2.5;
+                    glideTo(
+                        state.x + gsap.utils.clamp(-reach, reach, v * 300),
+                        1.1,
+                        "power3.out",
+                    );
+                }
+            });
+
+            viewport.addEventListener("pointercancel", () => (dragging = false));
+            viewport.addEventListener("contextmenu", (e) => {
+                if (dragging) e.preventDefault();
+            });
+
+            // ── horizontal wheel / trackpad ──────────────────────
+            viewport.addEventListener(
+                "wheel",
+                (e) => {
+                    if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+                    e.preventDefault();
+                    stopGlide();
+                    state.x -= e.deltaX;
+                    render();
+                },
+                { passive: false },
+            );
+
+            // ── arrow keys (the strip is focusable) ──────────────
+            viewport.addEventListener("keydown", (e) => {
+                if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+                e.preventDefault();
+                stopGlide();
+                const step = e.key === "ArrowLeft" ? pitch : -pitch;
+                if (reduced) {
+                    state.x += step;
+                    render();
+                } else {
+                    glideTo(state.x + step, 0.55, "power2.out");
+                }
+            });
+
+            // ── resize ───────────────────────────────────────────
+            let raf = 0;
+            window.addEventListener("resize", () => {
+                cancelAnimationFrame(raf);
+                raf = requestAnimationFrame(() => {
+                    measure();
+                    render();
+                });
+            });
+
+            // ── go ───────────────────────────────────────────────
+            measure();
+            state.x = viewport.clientWidth / 2 - (2 * pitch + cardW / 2);
+            render();
+        }
+    }
+</script>
+
+<style>
+    /* Full-bleed strip: cancels the section's 1.25rem side padding so
+       cards run edge-to-edge and clip at the screen. */
+    .story-viewport {
+        overflow: hidden;
+        cursor: grab;
+        touch-action: pan-y;
+        user-select: none;
+        -webkit-user-select: none;
+    }
+
+    .story-viewport:active {
+        cursor: grabbing;
+    }
+
+    .story-viewport:focus-visible {
+        outline: 1.5px solid
+            color-mix(in srgb, var(--color-gold) 55%, transparent);
+        outline-offset: -4px;
+    }
+
+    .story-track {
+        gap: clamp(1rem, 4vw, 2rem);
+        /* headroom for lifted cards and their shadows */
+        padding-block: 2.25rem;
+        will-change: transform;
+    }
+
+    .story-card {
+        width: clamp(10.5rem, 56vw, 19rem);
+        padding: 0.55rem 0.55rem 0;
+        border-radius: 6px;
+        background: #fffdf8;
+        box-shadow:
+            0 18px 36px -18px rgb(43 26 18 / 0.42),
+            0 2px 6px rgb(43 26 18 / 0.08);
+        /* no-JS pose; GSAP reproduces it exactly at the falloff edge */
+        transform: translateY(var(--lift)) rotate(var(--tilt));
+        will-change: transform;
+    }
+
+    .story-card img {
+        display: block;
+        width: 100%;
+        aspect-ratio: 4 / 5;
+        object-fit: cover;
+        border-radius: 3px;
+        background: var(--color-cream-2);
+    }
+
+    .story-card figcaption {
+        padding: 0.6rem 0.25rem 0.7rem;
+        font-family: var(--font-body-bn);
+        font-size: 0.72rem;
+        line-height: 1.5;
+        text-align: center;
+        color: color-mix(in srgb, var(--color-ink) 62%, transparent);
+    }
+</style>

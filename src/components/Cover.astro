@@ -1,0 +1,140 @@
+---
+/**
+ * 1 — Cover. Maroon panel, kolka corners, arched portrait,
+ * the couple's names in serif, and the date.
+ */
+import { couple, cover, wedding } from "../data/site";
+import { flourish, kolkaCorner } from "../data/kolka";
+import BorderRule from "./BorderRule.astro";
+import Kolka from "./Kolka.astro";
+---
+
+<section class="section panel-dark veil-dots" id="cover">
+    {/* Kolka corners — one piece turned a quarter into each corner */}
+    <Kolka
+        art={kolkaCorner}
+        rotate={270}
+        class="absolute left-0 top-0 w-[clamp(7rem,17vw,14rem)] text-gold-2 opacity-[0.26]"
+    />
+    <Kolka
+        art={kolkaCorner}
+        rotate={90}
+        flip="y"
+        class="absolute right-0 top-0 w-[clamp(7rem,17vw,14rem)] text-gold-2 opacity-[0.26]"
+    />
+    <Kolka
+        art={kolkaCorner}
+        rotate={270}
+        flip="y"
+        class="absolute bottom-0 left-0 w-[clamp(7rem,17vw,14rem)] text-gold-2 opacity-[0.26]"
+    />
+    <Kolka
+        art={kolkaCorner}
+        rotate={90}
+        class="absolute bottom-0 right-0 w-[clamp(7rem,17vw,14rem)] text-gold-2 opacity-[0.26]"
+    />
+
+    {/* A small crest above the invocation */}
+    <div
+        class="absolute left-1/2 top-3 -translate-x-1/2 sm:top-5"
+        aria-hidden="true"
+    >
+        <Kolka
+            art={flourish(8)}
+            class="w-12 text-gold-2 opacity-35 sm:w-16"
+        />
+    </div>
+
+    {/* Loose sprays drifting in from the mid edges */}
+    <div class="absolute left-0 top-[30%]" aria-hidden="true">
+        <Kolka
+            art={flourish(1)}
+            class="w-10 text-gold-2 opacity-20 sm:w-24"
+        />
+    </div>
+    <div class="absolute right-0 top-[62%] -scale-x-100" aria-hidden="true">
+        <Kolka
+            art={flourish(1)}
+            class="w-10 text-gold-2 opacity-20 sm:w-24"
+        />
+    </div>
+
+    <div
+        class="relative z-10 flex w-full max-w-xl flex-col items-center text-center"
+        data-poster
+    >
+        <p class="reveal font-body-bn text-[0.8rem] text-gold-2/75 sm:text-sm">
+            {cover.invocation}
+        </p>
+
+        <div class="reveal mt-5" style="--reveal-delay:220ms">
+            <div class="animate-drift">
+                <div
+                    class="arch-frame mx-auto"
+                    style="width: clamp(8.5rem, 27svh, 15rem)"
+                >
+                    <img
+                        src={cover.photo.src}
+                        alt={cover.photo.alt}
+                        class="aspect-[3/4]"
+                        fetchpriority="high"
+                    />
+                </div>
+            </div>
+        </div>
+
+        <h1
+            class="reveal balance mt-6 flex flex-wrap items-baseline justify-center gap-x-3 font-display text-[clamp(1.9rem,7.5vw,3.2rem)] leading-[1.25] text-gold-3"
+            style="--reveal-delay:320ms"
+        >
+            <span>{couple.bride.bn}</span>
+            <span class="font-accent text-[0.62em] text-gold-2/85">ও</span>
+            <span>{couple.groom.bn}</span>
+        </h1>
+
+        <p
+            class="reveal mt-2.5 font-latin text-xs tracking-[0.35em] text-gold-2/60 uppercase"
+        >
+            {couple.bride.en} &amp; {couple.groom.en}
+        </p>
+
+        <BorderRule
+            class="reveal mt-5 w-[min(80vw,28rem)] text-gold-2 opacity-60"
+        />
+
+
+        <p
+            class="reveal mt-4 font-body-bn text-[clamp(0.95rem,3.4vw,1.1rem)] text-gold-3/90"
+        >
+            {wedding.bnDate}
+            <span class="mx-1.5 text-gold-2/50">·</span>
+            {wedding.weekday}
+        </p>
+        <p class="reveal mt-1 font-body-bn text-sm text-gold-2/70">
+            {wedding.banglaDate}
+        </p>
+        <p
+            class="reveal mt-4 font-body-bn text-[0.7rem] tracking-[0.2em] text-gold-2/45"
+        >
+            {cover.caption}
+        </p>
+    </div>
+
+    {/* Scroll cue */}
+    <div
+        class="absolute bottom-4 left-1/2 hidden -translate-x-1/2 text-gold-2/45 sm:block"
+        aria-hidden="true"
+    >
+        <svg
+            class="animate-bob h-6 w-6"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+        >
+            <path d="M6 9l6 6 6-6"></path>
+        </svg>
+    </div>
+</section>

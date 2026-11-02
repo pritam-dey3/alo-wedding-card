@@ -1,0 +1,23 @@
+---
+/**
+ * Horizontal border strip composed from borders.eps: a mirrored terminal
+ * piece at each end with the symmetric centre piece between them.
+ * Used sparingly — three times on the page, where a rule belongs.
+ */
+import { borderRule } from "../data/kolka";
+
+interface Props {
+    class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<svg
+    class:list={["kolka-rule", className]}
+    viewBox={borderRule.viewBox}
+    fill="currentColor"
+    aria-hidden="true"
+>
+    <Fragment set:html={borderRule.parts} />
+</svg>

@@ -1,51 +1,193 @@
 ---
 /**
- * s7 — Invitation. Olive page: invocation line, salutation, paragraph,
- * signatures bottom-right. GIF ornament repeated from the band, like the
- * original.
+ * 3 — Invitation. A framed paper card: invocation, salutation,
+ * the formal Bengali invite, the hosts' signature, and the
+ * পরিচিতি (bride & groom) block.
  */
-import { invitation, ornament } from "../data/site";
+import { family, invitation, memoir } from "../data/site";
+import { divider } from "../data/ornaments";
+import { flourish, kolkaCorner, butterfly } from "../data/kolka";
+import Kolka from "./Kolka.astro";
+
+const people = [family.bride, family.groom];
 ---
 
-<section class="section bg-olive text-white" id="invitation">
-    <div class="relative w-full max-w-3xl text-center">
-        <img
-            src={ornament.gif}
-            alt=""
-            aria-hidden="true"
-            class="mx-auto mb-6 h-24 w-auto object-contain opacity-90 sm:h-32"
-            loading="lazy"
+<section class="section panel-cream" id="invitation">
+    {/* Rises out of the countdown's deep maroon — the seam is a gradient. */}
+    <div
+        class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-28 bg-gradient-to-b from-[#3a060e] to-transparent sm:h-44"
+        aria-hidden="true"
+    >
+    </div>
+
+    {/* Loose sprays peeking from the section edges, behind the card */}
+    <div
+        class="absolute -left-2 -top-2 -z-10 sm:-left-4 sm:-top-4"
+        aria-hidden="true"
+    >
+        <Kolka
+            art={flourish(6)}
+            class="w-16 text-gold opacity-20 sm:w-40"
+        />
+    </div>
+    <div
+        class="absolute -bottom-2 -right-2 -z-10 sm:-bottom-4 sm:-right-4"
+        aria-hidden="true"
+    >
+        <Kolka
+            art={flourish(10)}
+            class="w-16 text-gold opacity-20 sm:w-40"
+        />
+    </div>
+
+    <div
+        class="reveal relative w-full max-w-2xl border border-gold/40 bg-cream/60 px-6 py-12 shadow-[0_30px_80px_-45px_rgba(43,26,18,0.55)] sm:px-14 sm:py-16"
+    >
+        {/* inner hairline + kolka corners */}
+        <span
+            class="pointer-events-none absolute inset-1.5 border border-gold/25"
+        ></span>
+        <Kolka
+            art={kolkaCorner}
+            rotate={270}
+            class="absolute left-1.5 top-1.5 w-16 text-gold opacity-60 sm:w-20"
+        />
+        <Kolka
+            art={kolkaCorner}
+            rotate={90}
+            flip="y"
+            class="absolute right-1.5 top-1.5 w-16 text-gold opacity-60 sm:w-20"
+        />
+        <Kolka
+            art={kolkaCorner}
+            rotate={270}
+            flip="y"
+            class="absolute bottom-1.5 left-1.5 w-16 text-gold opacity-60 sm:w-20"
+        />
+        <Kolka
+            art={kolkaCorner}
+            rotate={90}
+            class="absolute bottom-1.5 right-1.5 w-16 text-gold opacity-60 sm:w-20"
         />
 
-        <p class="font-body-bn text-[clamp(1.2rem,2.4vw,2.667rem)]">
-            {invitation.invocation}
-        </p>
-
-        <p
-            class="font-body-bn mt-6 text-[clamp(1.05rem,2vw,2.216rem)] text-gold"
-        >
-            {invitation.salutation}
-        </p>
-
-        <p
-            class="font-body-bn mx-auto mt-4 max-w-2xl text-[clamp(0.95rem,1.9vw,2.216rem)] leading-relaxed"
-        >
-            {invitation.body}
-        </p>
-
-        <div
-            class="font-body-bn mt-8 text-right text-[clamp(0.95rem,1.8vw,1.9rem)] leading-relaxed"
-        >
-            <p>
-                {invitation.signatures.father.label}
-                <br />
-                {invitation.signatures.father.name}
+        <div class="relative text-center">
+            {/* the invitation letter, on top of the card */}
+            <Kolka
+                art={butterfly}
+                class="mx-auto w-16 text-gold opacity-45 sm:w-24"
+            />
+            <p class="card-highlight mt-3 font-body-bn text-alta">
+                {invitation.invocation}
             </p>
-            <p class="mt-2">
-                {invitation.signatures.mother.label}
-                <br />
-                {invitation.signatures.mother.name}
+
+            <div class="mt-6" data-stagger>
+                <p class="card-text font-display text-left text-maroon">
+                    {invitation.salutation}
+                </p>
+
+                {
+                    invitation.body.map((para) => (
+                        <p class="card-text mt-4 font-body-bn text-ink/85">
+                            {para}
+                        </p>
+                    ))
+                }
+            </div>
+
+            <div
+                class="mt-8 ml-auto w-fit font-body-bn text-left text-ink/80 [--card-leading:1.35]"
+                data-stagger
+            >
+                <p class="card-text text-gold">
+                    {invitation.signature.closing}
+                </p>
+                {
+                    invitation.signature.hosts.map((name) => (
+                        <p class="card-text mt-1 font-display text-maroon">
+                            {name}
+                        </p>
+                    ))
+                }
+            </div>
+
+            {/* divider border, then পরিচিতি below the letter */}
+            <span
+                class="orn mx-auto mt-10 w-36 text-gold/35"
+                set:html={divider}
+            />
+            <p class="card-highlight mt-6 font-body-bn text-alta">
+                {family.title}
             </p>
+
+            <div class="mt-6 grid gap-7 sm:grid-cols-2 sm:gap-6" data-stagger>
+                {
+                    people.map((person) => (
+                        <div>
+                            <p class="card-text font-body-bn text-gold">
+                                {person.role}
+                            </p>
+                            <p class="card-highlight mt-2 font-display text-maroon">
+                                {person.name}
+                            </p>
+                            {
+                                person.lines.length > 0 && (
+                                    <ul class="card-text mt-3 space-y-1.5 font-body-bn text-ink/75">
+                                        {person.lines.map((line) => <li>{line}</li>)}
+                                    </ul>
+                                )
+                            }
+                        </div>
+                    ))
+                }
+            </div>
+
+            {/* স্মারকলিপি, at the very bottom of the card */}
+            <span
+                class="orn mx-auto mt-9 w-36 text-gold/35"
+                set:html={divider}
+            />
+            <p class="card-highlight mt-6 font-body-bn text-alta">
+                {memoir.title}
+            </p>
+
+            <div class="mt-6" data-stagger>
+                {
+                    memoir.entries.map((entry) => (
+                        <div class="mt-5 first:mt-0">
+                            <p class="card-text font-body-bn text-gold">
+                                {entry.label}
+                            </p>
+                            <p class="card-text mt-1 font-display text-maroon">
+                                {entry.value || memoir.pending}
+                            </p>
+                        </div>
+                    ))
+                }
+                <div class="mt-5">
+                    <p class="card-text font-body-bn text-gold">
+                        {memoir.place.label}
+                    </p>
+                    {
+                        memoir.place.lines.map((line) => (
+                            <p class="card-text mt-1 font-display text-maroon">
+                                {line}
+                            </p>
+                        ))
+                    }
+                </div>
+            </div>
         </div>
     </div>
 </section>
+
+<style>
+    /* The card carries exactly two type sizes: body copy and highlights. */
+    .card-text {
+        font-size: clamp(0.95rem, 2.4vw, 1.05rem);
+        line-height: var(--card-leading, 1.9);
+    }
+    .card-highlight {
+        font-size: clamp(1.2rem, 3.2vw, 1.45rem);
+        line-height: 1.45;
+    }
+</style>

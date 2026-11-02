@@ -1,14 +1,16 @@
 ---
 import "../styles/global.css";
-import { timelines } from "../data/site";
-import Hero from "../components/Hero.astro";
+import { couple, wedding } from "../data/site";
+import { kolkaSprite } from "../data/kolka";
+
+import Cover from "../components/Cover.astro";
 import Countdown from "../components/Countdown.astro";
-import Story from "../components/Story.astro";
-import Timeline from "../components/Timeline.astro";
-import OrnamentBand from "../components/OrnamentBand.astro";
 import Invitation from "../components/Invitation.astro";
-import Family from "../components/Family.astro";
-import Memoir from "../components/Memoir.astro";
+import Story from "../components/Story.astro";
+import Footer from "../components/Footer.astro";
+
+const title = `${couple.bride.bn} ও ${couple.groom.bn} — শুভ বিবাহ`;
+const description = `শ্রেয়ার শুভ পরিণয় — ${wedding.bnDate} (${wedding.banglaDate})। শ্রেয়ার পরিবারের পক্ষ থেকে আপনাকে সাদর আমন্ত্রণ।`;
 ---
 
 <!doctype html>
@@ -16,29 +18,243 @@ import Memoir from "../components/Memoir.astro";
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{title} · {couple.bride.en} &amp; {couple.groom.en}</title>
+        <meta name="description" content={description} />
+        <meta name="theme-color" content="#5a0b17" />
+
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content="/images/hero.jpg" />
+        <meta property="og:locale" content="bn_IN" />
+        <meta name="twitter:card" content="summary_large_image" />
+
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
-            href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@100..900&family=Hind+Siliguri:wght@300;400;500;600;700&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Serif+Bengali:wght@400;500;600;700&display=swap"
             rel="stylesheet"
         />
-        <title>Gourav And Rupkatha Wedding Invitation</title>
-        <meta
-            name="description"
-            content="রূপকথা ও গৌরবের শুভ বিবাহ — ২৩ মাঘ ১৪৩২ (ইং ৬ ই ফেব্রুয়ারি ২০২৬)।"
-        />
+
+        {/* Added before first paint so reveal targets never flash. */}
+        <script is:inline>
+            document.documentElement.classList.add("js");
+        </script>
     </head>
     <body>
+        {/* Kolka symbol sprite — every ornament placement is a <use> into it */}
+        <Fragment set:html={kolkaSprite} />
         <main>
-            <Hero />
+            <Cover />
             <Countdown />
-            <Story />
-            {timelines.map((timeline) => <Timeline timeline={timeline} />)}
-            <OrnamentBand />
             <Invitation />
-            <Family />
-            <Memoir />
+            <Story />
         </main>
+        <Footer />
+
+        <script is:inline>
+            // Reveal fallback — tiny and dependency-free so content appears
+            // even if the GSAP bundle below is slow or fails to load. It
+            // toggles both ways, so even the fallback is not a one-time
+            // animation. The GSAP module disconnects this observer when it
+            // takes over.
+            (function () {
+                var targets = document.querySelectorAll(".reveal");
+                if (!("IntersectionObserver" in window)) {
+                    targets.forEach(function (el) {
+                        el.classList.add("is-in");
+                    });
+                    return;
+                }
+                var io = new IntersectionObserver(
+                    function (entries) {
+                        for (var i = 0; i < entries.length; i++) {
+                            entries[i].target.classList.toggle(
+                                "is-in",
+                                entries[i].isIntersecting,
+                            );
+                        }
+                    },
+                    { threshold: 0.12, rootMargin: "0px 0px -6% 0px" },
+                );
+                targets.forEach(function (el) {
+                    io.observe(el);
+                });
+                window.__revealIO = io;
+            })();
+        </script>
+
+        <script>
+            // GSAP scroll choreography. Takes over from the fallback
+            // observer above. Nothing here fires only once: reveals play
+            // forward entering and reverse leaving, the parallax/sway/drift
+            // effects are scrubbed to the scroll position both ways, and
+            // the clock floats forever. Everything is transform/opacity
+            // only, honours prefers-reduced-motion, and degrades to the
+            // fallback if the bundle never runs.
+            import { gsap } from "gsap";
+            import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+            declare global {
+                interface Window {
+                    __revealIO?: IntersectionObserver;
+                }
+            }
+
+            gsap.registerPlugin(ScrollTrigger);
+            // Phones resize when the URL bar hides; don't reflow animations
+            // for that.
+            ScrollTrigger.config({ ignoreMobileResize: true });
+
+            const reduced = window.matchMedia(
+                "(prefers-reduced-motion: reduce)",
+            ).matches;
+            const reveals = document.querySelectorAll<HTMLElement>(".reveal");
+
+            if (reduced) {
+                window.__revealIO?.disconnect();
+                reveals.forEach((el) => el.classList.add("is-in"));
+            } else {
+                window.__revealIO?.disconnect();
+                document.documentElement.classList.add("gsap");
+
+                // Cover elements choreograph themselves with --reveal-delay.
+                const parseDelay = (el: HTMLElement) => {
+                    const raw = getComputedStyle(el)
+                        .getPropertyValue("--reveal-delay")
+                        .trim();
+                    const n = Number.parseFloat(raw);
+                    if (!Number.isFinite(n)) return 0;
+                    return raw.endsWith("ms") ? n / 1000 : n;
+                };
+
+                // ── reveals: rise in entering, sink back leaving ─────
+                reveals.forEach((el) => {
+                    if (el.classList.contains("is-in")) return; // fallback got there first
+                    gsap.fromTo(
+                        el,
+                        { opacity: 0, y: 26 },
+                        {
+                            opacity: 1,
+                            y: 0,
+                            duration: 1,
+                            delay: parseDelay(el),
+                            ease: "power2.out",
+                            scrollTrigger: {
+                                trigger: el,
+                                start: "top 88%",
+                                toggleActions: "play none none reverse",
+                            },
+                        },
+                    );
+                });
+
+                // ── staggered groups (clock tiles, invite blocks) ───
+                document
+                    .querySelectorAll<HTMLElement>("[data-stagger]")
+                    .forEach((group) => {
+                        const kids = Array.from(
+                            group.children,
+                        ) as HTMLElement[];
+                        if (kids.length === 0) return;
+                        gsap.fromTo(
+                            kids,
+                            { opacity: 0, y: 20, scale: 0.97 },
+                            {
+                                opacity: 1,
+                                y: 0,
+                                scale: 1,
+                                duration: 0.8,
+                                stagger: 0.09,
+                                ease: "power2.out",
+                                scrollTrigger: {
+                                    trigger: group,
+                                    start: "top 85%",
+                                    toggleActions: "play none none reverse",
+                                },
+                            },
+                        );
+                    });
+
+                // ── cover poster: drifts up and dims as it leaves ────
+                const poster = document.querySelector<HTMLElement>(
+                    "#cover [data-poster]",
+                );
+                if (poster) {
+                    gsap.to(poster, {
+                        yPercent: -12,
+                        opacity: 0.3,
+                        ease: "none",
+                        scrollTrigger: {
+                            trigger: "#cover",
+                            start: "top top",
+                            end: "bottom 35%",
+                            scrub: true,
+                        },
+                    });
+                }
+
+                // ── countdown photo: slow parallax behind the wash ──
+                const bg = document.querySelector<HTMLElement>(
+                    "[data-parallax]",
+                );
+                if (bg) {
+                    gsap.fromTo(
+                        bg,
+                        { yPercent: -7, scale: 1.18 },
+                        {
+                            yPercent: 7,
+                            scale: 1.18,
+                            ease: "none",
+                            scrollTrigger: {
+                                trigger: bg.closest("section"),
+                                start: "top bottom",
+                                end: "bottom top",
+                                scrub: 0.6,
+                            },
+                        },
+                    );
+                }
+
+                // ── clock tiles: float forever, out of phase ─────────
+                const clock = document.getElementById("countdown-clock");
+                if (clock) {
+                    gsap.to(clock, {
+                        y: -7,
+                        duration: 2.6,
+                        ease: "sine.inOut",
+                        yoyo: true,
+                        repeat: -1,
+                    });
+                }
+
+                // ── kolka ornaments: gentle scroll-linked sway ──────
+                gsap.utils
+                    .toArray<SVGGraphicsElement>("main .kolka, footer .kolka")
+                    .forEach((el, i) => {
+                        const dir = i % 2 ? 1 : -1;
+                        gsap.fromTo(
+                            el,
+                            { rotation: 3 * dir },
+                            {
+                                rotation: -3 * dir,
+                                ease: "none",
+                                scrollTrigger: {
+                                    trigger: el.closest("section, footer"),
+                                    start: "top bottom",
+                                    end: "bottom top",
+                                    scrub: 1,
+                                },
+                            },
+                        );
+                    });
+
+                // Trigger positions drift while fonts/images load; re-measure.
+                window.addEventListener("load", () => ScrollTrigger.refresh());
+                document.fonts.ready.then(() => ScrollTrigger.refresh());
+            }
+        </script>
     </body>
 </html>

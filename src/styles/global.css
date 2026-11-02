@@ -1,58 +1,38 @@
 @import "tailwindcss";
 
-/* Webfonts (Anek Bangla + Hind Siliguri) load via <link> in index.astro head. */
+/* Webfonts (Noto Serif Bengali, Anek Bangla, Cormorant Garamond) load via
+   <link> in index.astro head. "Bengali OTS" is self-hosted below. */
 
 /* ============================================================
    Design tokens (Tailwind v4 @theme)
+   Palette: alta red + maroon + gold on cream — a Bengali
+   lal-shada wedding card.
    ============================================================ */
 @theme {
-  /* Palette lifted from the Canva original */
-  --color-cream: #f3f4e7; /* Hero / Timeline 2 / Timeline 3 bg */
-  --color-olive: #2d351b; /* Ornament / Invitation / Family / Memoir bg */
-  --color-gold: #ffde59; /* Accent yellow: headings, highlights */
+  --color-cream: #fdf8ef; /* paper */
+  --color-cream-2: #f7ecd9; /* deeper paper */
+  --color-maroon: #5a0b17; /* primary dark panel */
+  --color-maroon-2: #3a060e; /* deepest panel */
+  --color-alta: #9c1b2e; /* alta / sindoor red */
+  --color-gold: #bf9b30; /* rule + accent */
+  --color-gold-2: #e6c979; /* light gold text */
+  --color-gold-3: #f7e9c4; /* palest gold */
+  --color-ink: #2b1a12; /* body text on paper */
 
-  /* Font families (see "Font loading" below) */
-  --font-eng: "Roboto", system-ui, sans-serif; /* English UI text */
-  --font-hero: "Bengali OTS", "Anek Bangla", sans-serif; /* রূপকথা ও গৌরবের */
-  --font-display: "Baloo Da Bengali", "Anek Bangla", sans-serif; /* শুভ বিবাহ, years */
-  --font-body-bn: "Anek Bangla", "Hind Siliguri", sans-serif; /* body/subtitle Bengali */
+  --font-display: "Noto Serif Bengali", "Bengali OTS", serif;
+  --font-accent: "Bengali OTS", "Noto Serif Bengali", serif;
+  --font-body-bn: "Anek Bangla", "Hind Siliguri", sans-serif;
+  --font-latin: "Cormorant Garamond", Georgia, serif;
 
-  /* Section canvas: the Canva original is a fixed 1781x768 page.
-     Sections scale their content with clamp() instead. */
-  --spacing-section: clamp(3rem, 8vh, 6rem);
+  --spacing-section: clamp(2.5rem, 6.5vh, 4.75rem);
 }
 
 /* ============================================================
-   Font loading
-   The Canva original serves obfuscated subsets of:
-     Bengali OTS, Baloo Da, Anek Bangla, Hind Siliguri,
-     Ekushey Puja (licensed), BreveSlabText-Bold, Codec Pro (licensed)
-   First pass: self-hosted Canva woff2 subsets (public/fonts)
-   where exact glyph coverage matters, Google Fonts as fallback.
+   Fonts
    ============================================================ */
-
-/* Licensed Canva fonts (Ekushey Puja, Codec Pro) fall back to Anek Bangla
-   for now — swap in public/fonts/*.woff2 when licenses are bought. */
-
 @font-face {
   font-family: "Bengali OTS";
   src: url("/fonts/bengali-ots-400.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Baloo Da Bengali";
-  src: url("/fonts/baloo-da-bengali-400.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Roboto";
-  src: url("/fonts/roboto-latin-400.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -63,18 +43,27 @@
    ============================================================ */
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
   font-family: var(--font-body-bn);
+  background: var(--color-cream);
+  color: var(--color-ink);
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-/* Section base: full-bleed panel, centered content stack.
-   min-height keeps each panel close to the original 16:9 page ratio. */
+::selection {
+  background: var(--color-gold-2);
+  color: var(--color-maroon-2);
+}
+
+/* Section base: full-bleed panel, centered content stack. */
 .section {
   position: relative;
+  isolation: isolate;
   width: 100%;
   min-height: 100svh;
   display: flex;
@@ -85,17 +74,208 @@ body {
   padding: var(--spacing-section) 1.25rem;
 }
 
-/* Decorative polaroid frame used by the timeline collages */
-.polaroid {
+/* ============================================================
+   Textures — very low contrast, reads as handmade paper / silk
+   ============================================================ */
+.veil-dots::before {
+  content: "";
   position: absolute;
-  background: #fff;
-  padding: 5px 5px 24px;
-  box-shadow:
-    0 2px 6px rgb(0 0 0 / 0.25),
-    0 8px 24px rgb(0 0 0 / 0.18);
+  inset: 0;
+  z-index: -1;
+  background-image: radial-gradient(currentColor 1px, transparent 1px);
+  background-size: 22px 22px;
+  opacity: 0.05;
+  pointer-events: none;
 }
-.polaroid > img {
+
+.panel-dark {
+  background: radial-gradient(
+    120% 85% at 50% -15%,
+    #741124 0%,
+    #4c0712 48%,
+    #2c040a 100%
+  );
+  color: var(--color-gold-3);
+}
+
+.panel-dark-soft {
+  background: radial-gradient(
+    110% 80% at 50% 0%,
+    #5f0c1a 0%,
+    #400810 55%,
+    #2a040a 100%
+  );
+  color: var(--color-gold-3);
+}
+
+.panel-cream {
+  background: radial-gradient(
+    100% 70% at 50% 0%,
+    #fffdf7 0%,
+    #fdf8ef 55%,
+    #f7ecd9 100%
+  );
+  color: var(--color-ink);
+}
+
+/* Hairline gold rule that fades at both ends */
+.rule-gold {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    color-mix(in srgb, var(--color-gold) 70%, transparent),
+    transparent
+  );
+}
+
+/* ============================================================
+   Photo frames
+   ============================================================ */
+
+/* Arched (mehrab) frame used by the cover portrait */
+.arch-frame {
+  padding: 10px;
+  border: 1px solid color-mix(in srgb, var(--color-gold-2) 65%, transparent);
+  border-radius: 999px 999px 14px 14px;
+  background: linear-gradient(
+    180deg,
+    rgb(255 255 255 / 0.06),
+    rgb(0 0 0 / 0.12)
+  );
+  box-shadow:
+    inset 0 0 0 1px rgb(0 0 0 / 0.25),
+    0 30px 60px -24px rgb(0 0 0 / 0.75);
+}
+
+.arch-frame > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 999px 999px 8px 8px;
+}
+
+/* ============================================================
+   Scroll reveal
+   .js is added by an inline script in <head>, so content stays
+   fully visible when JS is off or fails.
+   ============================================================ */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.9s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.js .reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Once the GSAP module takes over (html.gsap) it drives reveals with
+   per-frame inline styles; the CSS transition must not re-smooth those
+   frames. Without the gsap class the fallback observer keeps its CSS
+   transition. */
+.js.gsap .reveal {
+  transition: none;
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateY(6px);
+    opacity: 1;
+  }
+}
+
+.animate-drift {
+  animation: drift 9s ease-in-out infinite;
+}
+
+.animate-bob {
+  animation: bob 2.4s ease-in-out infinite;
+}
+
+/* Inline ornament SVGs fill their wrapper span */
+.orn {
+  display: block;
+}
+
+.orn > svg {
   display: block;
   width: 100%;
   height: auto;
+}
+
+/* Kolka ornaments (assets/kolka). Width comes from a utility class; the
+   height follows the artwork's viewBox ratio. Fade with `opacity-*`, not an
+   alpha colour, so overlapping shapes inside one ornament stay even.
+   Layered so utilities such as `hidden`/`w-*` still win. */
+@layer components {
+  .kolka {
+    display: block;
+    height: auto;
+    pointer-events: none;
+  }
+
+  .kolka-rule {
+    display: block;
+    height: auto;
+    pointer-events: none;
+  }
+}
+
+/* Headings never leave a single trailing word on its own line */
+.balance {
+  text-wrap: balance;
+}
+
+/* The cover is a single-screen poster: tighter frame than the others. */
+#cover {
+  padding-block: clamp(2.25rem, 6vh, 4.5rem);
+}
+
+/* Content-height panels: no forced full screen, so there is no empty
+   panel padding to scroll through between sections. */
+#invitation,
+#story {
+  min-height: 0;
+}
+
+/* The footer is a closing strip, not a full screen. */
+#footer {
+  min-height: auto;
+  padding-block: clamp(3rem, 9vh, 5.5rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .js .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .animate-drift,
+  .animate-bob {
+    animation: none;
+  }
 }

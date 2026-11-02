@@ -1,30 +1,84 @@
 ---
 /**
- * s1 — Countdown. Original: black page with a photo background and a
- * static image of the numbers. Replica renders a live countdown toward
- * the wedding day; once the date has passed the numbers collapse to a
- * single farewell word.
+ * 2 — Countdown. Photo background under a deep maroon wash, four
+ * gold tiles ticking toward the wedding day. Numbers render in
+ * Bengali digits.
  */
-import { countdown } from "../data/site";
+import { countdown, wedding } from "../data/site";
+import { flourish } from "../data/kolka";
+import Kolka from "./Kolka.astro";
 
-const days = ["DAYS", "HRS", "MIN", "SEC"];
+const units = [
+    { key: "DAYS", label: "দিন" },
+    { key: "HRS", label: "ঘণ্টা" },
+    { key: "MIN", label: "মিনিট" },
+    { key: "SEC", label: "সেকেন্ড" },
+];
 ---
 
-<section class="section text-white" id="countdown" style="background:#000">
-    {/* Photo background with dark overlay, like the original */}
+<section class="section panel-dark-soft" id="countdown">
+    <div class="absolute inset-0 -z-10" aria-hidden="true">
+        <picture>
+            <source media="(max-width: 639px)" srcset={countdown.bgMobile} />
+            <img
+                src={countdown.bg}
+                alt=""
+                data-parallax
+                class="h-full w-full scale-105 object-cover object-center opacity-45 blur-[3px] sm:scale-110"
+                loading="lazy"
+            />
+        </picture>
+        <div
+            class="absolute inset-0 bg-gradient-to-b from-maroon-2/80 via-maroon-2/70 to-maroon-2/92"
+        >
+        </div>
+        {/* Melts out of the cover's bottom colour so the seam is a
+            gradient, not a line. */}
+        <div
+            class="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#2c040a] to-transparent sm:h-32"
+        >
+        </div>
+    </div>
+
+    {/* A mirrored pair of kolka sprays frames the clock. The wrapper owns
+        the position/flip transforms; GSAP sways the inner svg. */}
     <div
-        class="absolute inset-0 bg-cover bg-center opacity-40"
-        style={`background-image:url('/images/countdown-bg.jpg')`}
+        class="absolute left-0 top-[20%] -scale-x-100 sm:top-1/2 sm:-translate-y-1/2"
         aria-hidden="true"
     >
+        <Kolka
+            art={flourish(3)}
+            class="w-14 text-gold-2 opacity-25 sm:w-[clamp(8rem,15vw,14rem)]"
+        />
     </div>
-    <div class="relative flex flex-col items-center text-center">
-        <p class="font-body-bn text-[clamp(1.2rem,2.6vw,2.333rem)] font-medium">
+    <div
+        class="absolute right-0 bottom-[20%] sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2"
+        aria-hidden="true"
+    >
+        <Kolka
+            art={flourish(3)}
+            class="w-14 text-gold-2 opacity-25 sm:w-[clamp(8rem,15vw,14rem)]"
+        />
+    </div>
+
+    {/* A thin wave crowns the headline */}
+    <div
+        class="absolute left-1/2 top-4 -translate-x-1/2 sm:top-6"
+        aria-hidden="true"
+    >
+        <Kolka
+            art={flourish(9)}
+            class="w-36 text-gold-2 opacity-20 sm:w-56"
+        />
+    </div>
+
+    <div
+        class="reveal relative flex w-full max-w-xl flex-col items-center text-center"
+    >
+        <p class="font-display text-[clamp(1.6rem,6vw,2.4rem)] text-gold-3/85">
             {countdown.line1}
         </p>
-        <p
-            class="font-body-bn text-[clamp(1.7rem,3.6vw,3.333rem)] font-bold text-gold"
-        >
+        <p class="font-display text-[clamp(1.6rem,6vw,2.4rem)] text-gold-2">
             {countdown.line2}
         </p>
 
@@ -32,58 +86,88 @@ const days = ["DAYS", "HRS", "MIN", "SEC"];
             id="countdown-clock"
             data-target={countdown.target}
             data-past-text={countdown.pastText}
-            class="mt-8 flex items-end gap-4 sm:gap-8"
+            data-stagger
+            class="mt-8 grid w-full grid-cols-4 gap-2 sm:gap-4"
         >
             {
-                days.map((unit) => (
-                    <div class="flex flex-col items-center">
+                units.map((unit) => (
+                    <div class="rounded-md border border-gold-2/25 bg-black/25 px-1 py-3 backdrop-blur-[2px] sm:py-5">
                         <span
-                            class="font-display text-[clamp(2rem,6vw,4.667rem)] leading-none tabular-nums"
-                            data-unit={unit}
+                            class="block font-display text-[clamp(1.4rem,6.5vw,2.4rem)] leading-none text-gold-3 tabular-nums"
+                            data-unit={unit.key}
                         >
                             --
                         </span>
-                        <span class="font-eng mt-2 text-xs tracking-[0.3em] text-white/70">
-                            {unit}
+                        <span class="mt-2 block font-body-bn text-[0.68rem] text-gold-2/70 sm:text-xs">
+                            {unit.label}
                         </span>
                     </div>
                 ))
             }
         </div>
+
+        <div id="countdown-done" class="mt-10 hidden">
+            <p class="font-display text-[clamp(1.3rem,5vw,2rem)] text-gold-3">
+                {countdown.pastText}
+            </p>
+            <p class="mt-2 font-body-bn text-sm text-gold-2/70">
+                {wedding.bnDate} · {wedding.banglaDate}
+            </p>
+        </div>
     </div>
 </section>
 
 <script>
-    // Live countdown: ticks every second toward the wedding date.
-    const el = document.getElementById("countdown-clock");
-    if (el) {
-        const target = new Date(el.dataset.target ?? "").getTime();
+    // Live countdown. Digits are rendered in Bengali numerals.
+    const BN_DIGITS = "০১২৩৪৫৬৭৮৯";
+    const toBn = (n: number) =>
+        String(Math.max(n, 0))
+            .padStart(2, "0")
+            .replace(/\d/g, (d) => BN_DIGITS[Number(d)]);
+
+    const clock = document.getElementById("countdown-clock");
+    const done = document.getElementById("countdown-done");
+
+    if (clock && done) {
+        const target = new Date(clock.dataset.target ?? "").getTime();
         const spans = new Map(
-            [...el.querySelectorAll<HTMLElement>("[data-unit]")].map((s) => [
-                s.dataset.unit!,
-                s,
-            ]),
+            Array.from(clock.querySelectorAll<HTMLElement>("[data-unit]")).map(
+                (s) => [s.dataset.unit ?? "", s] as const,
+            ),
         );
-        const pad = (n: number) => String(Math.max(n, 0)).padStart(2, "0");
-        if (target <= Date.now()) {
-            // Wedding day already reached: show a single farewell word.
-            el.textContent = el.dataset.pastText ?? "";
+
+        const finish = () => {
+            clock.classList.add("hidden");
+            done.classList.remove("hidden");
+        };
+
+        if (!Number.isFinite(target) || target <= Date.now()) {
+            finish();
         } else {
             const tick = () => {
-                let diff = Math.max(0, target - Date.now());
+                let diff = target - Date.now();
+                if (diff <= 0) {
+                    finish();
+                    return false;
+                }
                 const d = Math.floor(diff / 86_400_000);
                 diff -= d * 86_400_000;
                 const h = Math.floor(diff / 3_600_000);
                 diff -= h * 3_600_000;
                 const m = Math.floor(diff / 60_000);
                 const s = Math.floor((diff - m * 60_000) / 1000);
-                spans.get("DAYS")!.textContent = pad(d);
-                spans.get("HRS")!.textContent = pad(h);
-                spans.get("MIN")!.textContent = pad(m);
-                spans.get("SEC")!.textContent = pad(s);
+                spans.get("DAYS")!.textContent = toBn(d);
+                spans.get("HRS")!.textContent = toBn(h);
+                spans.get("MIN")!.textContent = toBn(m);
+                spans.get("SEC")!.textContent = toBn(s);
+                return true;
             };
-            tick();
-            setInterval(tick, 1000);
+
+            if (tick()) {
+                const id = setInterval(() => {
+                    if (!tick()) clearInterval(id);
+                }, 1000);
+            }
         }
     }
 </script>
