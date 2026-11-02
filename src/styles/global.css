@@ -259,10 +259,13 @@ body {
   min-height: 0;
 }
 
-/* The footer is a closing strip, not a full screen. */
+/* The footer is a closing strip, not a full screen. The extra bottom
+   padding keeps the share button clear of the page bottom, so the
+   scroll-reveal (which fires at ~88% of the viewport) always triggers
+   before the scroll ends. */
 #footer {
   min-height: auto;
-  padding-block: clamp(3rem, 9vh, 5.5rem);
+  padding-block: clamp(4.5rem, 14vh, 8rem);
 }
 
 @media (prefers-reduced-motion: reduce) {

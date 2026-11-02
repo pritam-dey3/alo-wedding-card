@@ -1,0 +1,61 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.3
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build site
+        run: bun run build
+        env:
+          SITE_URL: https://pritam-dey3.github.io
+          SITE_BASE: /alo-wedding-card/
+
+      - name: Point GitHub Pages at the publish branch
+        continue-on-error: true
+        run: |
+          gh api --method PUT "/repos/${{ github.repository }}/pages" --input - <<'EOF'
+          {
+            "build_type": "legacy",
+            "source": {
+              "branch": "publish",
+              "path": "/"
+            }
+          }
+          EOF
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy dist to publish branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: publish
+          publish_dir: ./dist
+          force_orphan: true
+          user_name: github-actions[bot]
+          user_email: github-actions[bot]@users.noreply.github.com
+          commit_message: 'Deploy ${{ github.sha }}'

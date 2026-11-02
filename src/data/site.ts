@@ -132,11 +132,6 @@ export const memoir = {
             label: "শুভ বিবাহ:",
             value: "১৮ ই মাঘ ১৪৩৩ (ইং ২৯ শে জানুয়ারি ২০২৭)",
         },
-        {
-            label: "শুভ প্রীতিভোজ:",
-            /** ✎ বৌভাত date — while empty the card shows the pending note. */
-            value: "",
-        },
     ],
     place: {
         label: "স্থান: নিজ বাসভবন",
