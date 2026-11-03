@@ -51,10 +51,11 @@ export const countdown = {
 /* ── 3. Invitation ───────────────────────────────────────── */
 export const invitation = {
     invocation: "|| শ্রী শ্রী প্রজাপতয়ে নমঃ ||",
-    salutation: "সবিনয় নিবেদন,",
+    salutation: "বিনয় নিবেদন,",
     body: [
-        "আগামী ১৮ ই মাঘ ১৪৩৩ (ইং ২৯ শে জানুয়ারি ২০২৭) শুক্রবার শুভ লগ্নে আমাদের কন্যা কল্যাণীয়া শ্রেয়ার সহিত কল্যাণীয় সৌরভের শুভ পরিণয় সুসম্পন্ন হইবে। এতদুপলক্ষে আপনি সবান্ধবে উপস্থিত থাকিয়া নবদম্পতিকে আশীর্বাদ করিয়া বাধিত করিবেন — এই আমাদের একান্ত প্রার্থনা।",
-        "পত্রে নিমন্ত্রণের ত্রুটি আপনারা প্রীতি দৃষ্টিতে মার্জনা করিবেন।",
+        "পরম মঙ্গলময় দিব্যত্রয়ীর শুভাশীষে",
+        "আগামী ১৮ ই মাঘ ১৪৩৩ (ইং ২৯ শে জানুয়ারি ২০২৭) শুক্রবার শুভ লগ্নে আমাদের একমাত্র কন্যা কল্যাণীয়া শ্রেয়ার সহিত কল্যাণীয় সৌরভের শুভ পরিণয় সুসম্পন্ন হইবে। এতদুপলক্ষে আপনার শুভাগমনে নবদম্পতিকে আশীর্বাদ করিয়া বাধিত করিবেন — এই আমাদের একান্ত প্রার্থনা।",
+        "পত্রে নিমন্ত্রণের ত্রুটি আপনারা প্রীতিদৃষ্টিতে মার্জনা করিবেন।",
     ],
     signature: {
         closing: "বিনীত",
@@ -93,13 +94,11 @@ export const family = {
  *  the source filenames (see scripts/photo-map.json) — the files carry
  *  no EXIF, so that share date is the only date metadata that exists. */
 export const story = {
-    eyebrow: "Our Story",
     title: "আমাদের গল্প",
     body: "একটা ছোট্ট আলাপ থেকে শুরু। তারপর অজস্র কথা, আর হাত ধরে পথ চলা। হাসি, অভিমান, খুনসুটি আর অনেকগুলো স্বপ্ন নিয়ে আমাদের গল্পটা আজ নতুন এক অধ্যায়ে পা রাখছে। এবার সেই পথেই আমরা চলব একসাথে, আজীবন।",
     photos: [
         { src: withBase("/images/m02.jpg"), date: "২৪ অক্টোবর ২০২৬" },
         { src: withBase("/images/m18.jpg"), date: "২৬ অক্টোবর ২০২৬" },
-        { src: withBase("/images/m21.jpg"), date: "২৬ অক্টোবর ২০২৬" },
         { src: withBase("/images/m01.jpg"), date: "২৪ অক্টোবর ২০২৬" },
         { src: withBase("/images/m26.jpg"), date: "২৬ অক্টোবর ২০২৬" },
         { src: withBase("/images/m03.jpg"), date: "২৬ অক্টোবর ২০২৬" },
@@ -107,8 +106,6 @@ export const story = {
         { src: withBase("/images/m12.jpg"), date: "২৬ অক্টোবর ২০২৬" },
         { src: withBase("/images/m15.jpg"), date: "২৬ অক্টোবর ২০২৬" },
         { src: withBase("/images/m07.jpg"), date: "২৬ অক্টোবর ২০২৬" },
-        { src: withBase("/images/m20.jpg"), date: "২৬ অক্টোবর ২০২৬" },
-        { src: withBase("/images/m05.jpg"), date: "২৬ অক্টোবর ২০২৬" },
         { src: withBase("/images/m25.jpg"), date: "২৬ অক্টোবর ২০২৬" },
         { src: withBase("/images/m24.jpg"), date: "২৬ অক্টোবর ২০২৬" },
         { src: withBase("/images/m23.jpg"), date: "২৬ অক্টোবর ২০২৬" },
@@ -117,7 +114,6 @@ export const story = {
         { src: withBase("/images/m09.jpg"), date: "২৬ অক্টোবর ২০২৬" },
         { src: withBase("/images/m22.jpg"), date: "২৬ অক্টোবর ২০২৬" },
         { src: withBase("/images/m27.jpg"), date: "২৬ অক্টোবর ২০২৬" },
-        { src: withBase("/images/m14.jpg"), date: "২৬ অক্টোবর ২০২৬" },
         { src: withBase("/images/m16.jpg"), date: "২৬ অক্টোবর ২০২৬" },
         { src: withBase("/images/m11.jpg"), date: "২৬ অক্টোবর ২০২৬" },
         { src: withBase("/images/m04.jpg"), date: "২৬ অক্টোবর ২০২৬" },
@@ -136,8 +132,11 @@ export const memoir = {
         },
     ],
     place: {
-        label: "স্থান: নিজ বাসভবন",
-        lines: ["বিবেকপাড়া, খাঁটুরা, উত্তর ২৪ পরগনা"],
+        label: "স্থান: কুইন প্যালেস",
+        lines: [
+            "৩/৩২, কার্ল মার্কস সরণি, লক্ষ্মীপল্লী,",
+            "মোরেপুকুর, রিষড়া, ৭১২২৫০",
+        ],
     },
     pending: "বিস্তারিত শীঘ্রই জানানো হবে",
 };
@@ -145,5 +144,4 @@ export const memoir = {
 /* ── 5. Footer ──────────────────────────────────────────── */
 export const footer = {
     note: "আপনাদের উপস্থিতিই আমাদের সবচেয়ে বড় উপহার",
-    share: "কার্ডটি শেয়ার করুন",
 };

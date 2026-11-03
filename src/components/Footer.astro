@@ -1,6 +1,6 @@
 ---
 /**
- * 4 — Footer. A closing note and a native share button.
+ * 4 — Footer. A closing note.
  */
 import { footer } from "../data/site";
 import { flourish } from "../data/kolka";
@@ -47,51 +47,5 @@ import Kolka from "./Kolka.astro";
         >
             {footer.note}
         </p>
-
-        <button
-            id="share-card"
-            type="button"
-            class="reveal mt-8 inline-flex items-center gap-2 border border-gold-2/40 px-6 py-2.5 font-body-bn text-sm text-gold-3 transition-colors hover:bg-gold-2/10"
-        >
-            <svg
-                viewBox="0 0 24 24"
-                class="h-4 w-4"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.6"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-            >
-                <path d="M12 16V4M12 4l-4 4M12 4l4 4"></path>
-                <path d="M5 13v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"></path>
-            </svg>
-            {footer.share}
-        </button>
     </div>
 </footer>
-
-<script>
-    const shareBtn = document.getElementById("share-card");
-
-    shareBtn?.addEventListener("click", async () => {
-        const payload = {
-            title: document.title,
-            text: document.title,
-            url: location.href,
-        };
-        if (navigator.share) {
-            try {
-                await navigator.share(payload);
-                return;
-            } catch (err) {
-                if ((err as DOMException)?.name === "AbortError") return;
-            }
-        }
-        window.open(
-            `https://wa.me/?text=${encodeURIComponent(`${payload.text} ${payload.url}`)}`,
-            "_blank",
-            "noopener",
-        );
-    });
-</script>

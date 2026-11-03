@@ -72,22 +72,25 @@ const people = [family.bride, family.groom];
 
         <div class="relative text-center">
             {/* the invitation letter, on top of the card */}
+            <p class="card-highlight -mt-3 font-body-bn text-alta sm:-mt-4">
+                ॐ
+            </p>
             <Kolka
                 art={butterfly}
-                class="mx-auto w-16 text-gold opacity-45 sm:w-24"
+                class="mx-auto mt-1 w-16 text-gold opacity-45 sm:w-24"
             />
             <p class="card-highlight mt-3 font-body-bn text-alta">
                 {invitation.invocation}
             </p>
 
-            <div class="mt-6" data-stagger>
-                <p class="card-text font-display text-left text-maroon">
+            <div class="mt-6 text-left" data-stagger>
+                <p class="card-text font-display text-maroon">
                     {invitation.salutation}
                 </p>
 
                 {
                     invitation.body.map((para) => (
-                        <p class="card-text mt-4 font-body-bn text-ink/85">
+                        <p class="card-text mt-3 font-body-bn text-ink/85">
                             {para}
                         </p>
                     ))

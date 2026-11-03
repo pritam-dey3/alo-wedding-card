@@ -260,7 +260,7 @@ body {
 }
 
 /* The footer is a closing strip, not a full screen. The extra bottom
-   padding keeps the share button clear of the page bottom, so the
+   padding keeps the closing note clear of the page bottom, so the
    scroll-reveal (which fires at ~88% of the viewport) always triggers
    before the scroll ends. */
 #footer {
