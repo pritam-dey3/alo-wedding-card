@@ -23,7 +23,7 @@ export const couple = {
 
 export const wedding = {
     /** Drives the live countdown (IST). */
-    isoDate: "2027-01-29T00:00:00+05:30",
+    isoDate: "2027-01-29T18:24:00+05:30",
     bnDate: "২৯ শে জানুয়ারি ২০২৭",
     weekday: "শুক্রবার",
     banglaDate: "১৮ ই মাঘ ১৪৩৩",
