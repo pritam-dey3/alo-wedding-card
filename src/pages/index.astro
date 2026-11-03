@@ -43,6 +43,35 @@ const description = `শ্রেয়ার শুভ পরিণয় — $
         <script is:inline>
             document.documentElement.classList.add("js");
         </script>
+        <style>
+			#nl-badge-frame,
+			#nl-hud-frame,
+			#netlify-badge,
+			[id^="nl-badge"],
+			[id^="nl-hud"],
+			[class*="nl-badge"],
+			[class*="netlify-badge"],
+			iframe[src*="netlify"][src*="badge"] {
+				display: none !important;
+				visibility: hidden !important;
+				opacity: 0 !important;
+				width: 0 !important;
+				height: 0 !important;
+				max-width: 0 !important;
+				max-height: 0 !important;
+				min-width: 0 !important;
+				min-height: 0 !important;
+				margin: 0 !important;
+				padding: 0 !important;
+				border: 0 !important;
+				overflow: hidden !important;
+				position: absolute !important;
+				inset: auto !important;
+				clip-path: inset(100%) !important;
+				pointer-events: none !important;
+				z-index: -2147483647 !important;
+			}
+		</style>
     </head>
     <body>
         {/* Kolka symbol sprite — every ornament placement is a <use> into it */}
