@@ -8,6 +8,7 @@ import Countdown from "../components/Countdown.astro";
 import Invitation from "../components/Invitation.astro";
 import Story from "../components/Story.astro";
 import Footer from "../components/Footer.astro";
+import MusicToggle from "../components/MusicToggle.astro";
 import { withBase } from "../utils/withBase";
 
 const title = `${couple.bride.bn} ও ${couple.groom.bn} — শুভ বিবাহ`;
@@ -44,37 +45,39 @@ const description = `শ্রেয়ার শুভ পরিণয় — $
             document.documentElement.classList.add("js");
         </script>
         <style is:global>
-			#nl-badge-frame,
-			#nl-hud-frame,
-			#netlify-badge,
-			[id^="nl-badge"],
-			[id^="nl-hud"],
-			[class*="nl-badge"],
-			[class*="netlify-badge"],
-			iframe[src*="netlify"][src*="badge"] {
-				display: none !important;
-				visibility: hidden !important;
-				opacity: 0 !important;
-				width: 0 !important;
-				height: 0 !important;
-				max-width: 0 !important;
-				max-height: 0 !important;
-				min-width: 0 !important;
-				min-height: 0 !important;
-				margin: 0 !important;
-				padding: 0 !important;
-				border: 0 !important;
-				overflow: hidden !important;
-				position: absolute !important;
-				inset: auto !important;
-				clip-path: inset(100%) !important;
-				pointer-events: none !important;
-				z-index: -2147483647 !important;
-			}
-		</style>
+            #nl-badge-frame,
+            #nl-hud-frame,
+            #netlify-badge,
+            [id^="nl-badge"],
+            [id^="nl-hud"],
+            [class*="nl-badge"],
+            [class*="netlify-badge"],
+            iframe[src*="netlify"][src*="badge"] {
+                display: none !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
+                width: 0 !important;
+                height: 0 !important;
+                max-width: 0 !important;
+                max-height: 0 !important;
+                min-width: 0 !important;
+                min-height: 0 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                border: 0 !important;
+                overflow: hidden !important;
+                position: absolute !important;
+                inset: auto !important;
+                clip-path: inset(100%) !important;
+                pointer-events: none !important;
+                z-index: -2147483647 !important;
+            }
+        </style>
     </head>
     <body>
-        {/* Kolka symbol sprite — every ornament placement is a <use> into it */}
+        {
+            /* Kolka symbol sprite — every ornament placement is a <use> into it */
+        }
         <Fragment set:html={kolkaSprite} />
         <main>
             <Cover />
@@ -83,6 +86,7 @@ const description = `শ্রেয়ার শুভ পরিণয় — $
             <Story />
         </main>
         <Footer />
+        <MusicToggle />
 
         <script is:inline>
             // Reveal fallback — tiny and dependency-free so content appears
@@ -227,9 +231,8 @@ const description = `শ্রেয়ার শুভ পরিণয় — $
                 }
 
                 // ── countdown photo: slow parallax behind the wash ──
-                const bg = document.querySelector<HTMLElement>(
-                    "[data-parallax]",
-                );
+                const bg =
+                    document.querySelector<HTMLElement>("[data-parallax]");
                 if (bg) {
                     gsap.fromTo(
                         bg,

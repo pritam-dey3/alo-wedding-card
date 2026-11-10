@@ -1,0 +1,116 @@
+---
+/**
+ * Floating music toggle. Muted (deactivated) by default; tapping it plays
+ * the song on repeat, tapping again pauses. Sits bottom-right above the
+ * page but below the Netlify HUD.
+ */
+import { withBase } from "../utils/withBase";
+
+const src = withBase("/audio/sonakathi.mp3");
+---
+
+<button
+    id="music-toggle"
+    type="button"
+    class="fixed bottom-5 right-5 z-50 grid h-12 w-12 place-items-center rounded-full border border-gold/40 bg-maroon/85 text-gold-2 shadow-lg shadow-maroon-2/40 backdrop-blur transition-colors duration-300 hover:border-gold-2 hover:text-gold-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-2 sm:bottom-7 sm:right-7"
+    aria-pressed="false"
+    aria-label="গান চালান"
+    title="গান চালান / থামান"
+>
+    <audio id="music-src" src={src} loop preload="none"></audio>
+
+    {/* Muted / paused: speaker with a cross. */}
+    <svg
+        class="music-icon music-icon--off h-5 w-5"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.6"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+    >
+        <path d="M11 5 6 9H3v6h3l5 4z"></path>
+        <line x1="16" y1="9" x2="22" y2="15"></line>
+        <line x1="22" y1="9" x2="16" y2="15"></line>
+    </svg>
+
+    {/* Playing: speaker with sound waves. */}
+    <svg
+        class="music-icon music-icon--on h-5 w-5"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.6"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+    >
+        <path d="M11 5 6 9H3v6h3l5 4z"></path>
+        <path d="M15.5 8.5a5 5 0 0 1 0 7"></path>
+        <path d="M18.5 5.5a9 9 0 0 1 0 13"></path>
+    </svg>
+</button>
+
+<style>
+    /* The icon swap is driven by the [data-playing] attribute the script
+       sets. These id-scoped rules beat Tailwind's `.hidden` class, so the
+       icons cannot get stuck both-hidden. */
+    #music-toggle .music-icon--on {
+        display: none;
+    }
+    #music-toggle[data-playing="true"] .music-icon--on {
+        display: block;
+    }
+    #music-toggle[data-playing="true"] .music-icon--off {
+        display: none;
+    }
+    @media (prefers-reduced-motion: no-preference) {
+        #music-toggle[data-playing="true"] .music-icon--on {
+            animation: music-pulse 1.6s ease-in-out infinite;
+        }
+    }
+    @keyframes music-pulse {
+        0%,
+        100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.08);
+        }
+    }
+</style>
+
+<script is:inline>
+    (function () {
+        var btn = document.getElementById("music-toggle");
+        var audio = document.getElementById("music-src");
+        if (!btn || !audio) return;
+
+        var setIcon = function (playing) {
+            btn.setAttribute("data-playing", playing ? "true" : "false");
+            btn.setAttribute("aria-pressed", playing ? "true" : "false");
+            btn.setAttribute("aria-label", playing ? "গান থামান" : "গান চালান");
+        };
+        setIcon(false);
+
+        btn.addEventListener("click", function () {
+            if (audio.paused) {
+                // With preload="none" the play event can lag behind the
+                // actual playback, so flip the icon here rather than waiting
+                // for it. play() rejects if the browser blocks audio until a
+                // user gesture — but this is one, so it should resolve.
+                var p = audio.play();
+                if (p && p.catch) {
+                    p.catch(function () {
+                        setIcon(false);
+                    });
+                }
+                setIcon(true);
+            } else {
+                audio.pause();
+                setIcon(false);
+            }
+        });
+    })();
+</script>
