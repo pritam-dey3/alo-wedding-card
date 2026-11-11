@@ -27,9 +27,14 @@ const n = set.length;
     >
     </div>
 
-    {/* A mirrored pair of sprays frames the header; the wrapper owns the
-        flip so GSAP can sway the inner svg freely. */}
-    <div class="absolute -right-6 top-8 -z-10 -scale-x-100 md:right-6" aria-hidden="true">
+    {
+        /* A mirrored pair of sprays frames the header; the wrapper owns the
+        flip so GSAP can sway the inner svg freely. */
+    }
+    <div
+        class="absolute -right-6 top-8 -z-10 -scale-x-100 md:right-6"
+        aria-hidden="true"
+    >
         <Kolka
             art={flourish(2)}
             class="w-32 text-gold opacity-30 sm:w-44 md:w-56"
@@ -42,10 +47,7 @@ const n = set.length;
         />
     </div>
     <div class="absolute -left-3 bottom-6 -z-10" aria-hidden="true">
-        <Kolka
-            art={flourish(7)}
-            class="w-16 text-gold opacity-20 sm:w-32"
-        />
+        <Kolka art={flourish(7)} class="w-16 text-gold opacity-20 sm:w-32" />
     </div>
 
     <div class="w-full max-w-3xl text-center">
@@ -91,12 +93,11 @@ const n = set.length;
                         >
                             <img
                                 src={photo.src}
-                                alt={`শ্রেয়া ও সৌরভ — ${photo.date}`}
+                                alt="শ্রেয়া ও সৌরভ"
                                 loading="lazy"
                                 decoding="async"
                                 draggable="false"
                             />
-                            <figcaption>{photo.date}</figcaption>
                         </figure>
                     );
                 })
@@ -207,8 +208,14 @@ const n = set.length;
             ).observe(root);
 
             if (canHover) {
-                viewport.addEventListener("mouseenter", () => (hovering = true));
-                viewport.addEventListener("mouseleave", () => (hovering = false));
+                viewport.addEventListener(
+                    "mouseenter",
+                    () => (hovering = true),
+                );
+                viewport.addEventListener(
+                    "mouseleave",
+                    () => (hovering = false),
+                );
             }
 
             // ── drag + fling ─────────────────────────────────────
@@ -236,7 +243,8 @@ const n = set.length;
                 const now = performance.now();
                 const dt = now - lastT;
                 if (dt > 0) {
-                    velocity = 0.8 * velocity + 0.2 * ((e.clientX - lastX) / dt);
+                    velocity =
+                        0.8 * velocity + 0.2 * ((e.clientX - lastX) / dt);
                     lastX = e.clientX;
                     lastT = now;
                 }
@@ -257,7 +265,10 @@ const n = set.length;
                 }
             });
 
-            viewport.addEventListener("pointercancel", () => (dragging = false));
+            viewport.addEventListener(
+                "pointercancel",
+                () => (dragging = false),
+            );
             viewport.addEventListener("contextmenu", (e) => {
                 if (dragging) e.preventDefault();
             });
@@ -337,7 +348,7 @@ const n = set.length;
 
     .story-card {
         width: clamp(10.5rem, 56vw, 19rem);
-        padding: 0.55rem 0.55rem 0;
+        padding: 0.55rem 0.55rem 0.55rem;
         border-radius: 6px;
         background: #fffdf8;
         box-shadow:
@@ -355,14 +366,5 @@ const n = set.length;
         object-fit: cover;
         border-radius: 3px;
         background: var(--color-cream-2);
-    }
-
-    .story-card figcaption {
-        padding: 0.6rem 0.25rem 0.7rem;
-        font-family: var(--font-body-bn);
-        font-size: 0.72rem;
-        line-height: 1.5;
-        text-align: center;
-        color: color-mix(in srgb, var(--color-ink) 62%, transparent);
     }
 </style>
